@@ -1,0 +1,142 @@
+\documentclass[float=false]{standalone}
+\usepackage{pgfgantt}
+\usepackage{pgfcalendar}
+\usepackage{datetime}
+\usepackage[none]{hyphenat}
+\usepackage{relsize} % Allow fonts to be shrunk relative to normal fontsize
+
+% Remove labels for start-finish, start-start, etc.
+\setganttlinklabel{f-s}{}
+\setganttlinklabel{s-s}{}
+\setganttlinklabel{f-f}{}
+
+\begin{document}
+\begin{ganttchart}[
+	x unit=0.45cm/2,
+	y unit chart=0.6cm,
+	hgrid={dotted},
+	vgrid={*{1}{draw=none},dotted}, %Draw vertical lines every second unit because one unit is half a day
+	bar label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	group label node/.style={
+		text width=1.5in,
+		align=right,
+		font=\bf\relsize{-2},
+		anchor=east
+	},
+	milestone label node/.style={
+		text width=1.5in,
+		align=right,
+		font=\em\relsize{-2},
+		anchor=east
+	},
+]
+{0}{41} % 20 days
+	\newcommand{\barcolor}[1]{{bar/.style={fill=#1}}}
+	\newcommand{\groupcolor}[1]{group/.append style={fill=#1}}
+	\gantttitlelist{3,...,23}{2} \\
+
+	\ganttbar{Project Management Meeting}{0}{0}\\
+	\ganttbar{Function Decomposition}{0}{1}\\
+	\ganttbar[name=congen]{Concept Generation}{2}{4}\\
+	\ganttbar[name=screen]{Screening}{3}{3}\\
+	\ganttbar[name=rank]{Ranking}{6}{7}\\
+	\ganttlink{congen}{rank}
+	\ganttlink{screen}{rank}
+
+	\ganttbar[name=research]{Detailed Research}{8}{11}\\
+	\ganttbar[name=prototype1]{Prototype 1}{8}{9}\\
+	\ganttlink{screen}{prototype1}
+	\ganttlink{rank}{research}
+
+	\ganttmilestone{Preliminary Prototype Due}{19} \\
+
+	\ganttbar[name=prototype2]{Prototype 2}{12}{15}\\
+	\ganttlink{prototype1}{prototype2}
+	\ganttlink{research}{prototype2}
+
+	\ganttbar[name=weight]{Weight Testing}{16}{16}\\
+	\ganttbar[name=wave]{Wave Testing}{16}{16}\\
+	\ganttlink{prototype2}{weight}
+	\ganttlink{prototype2}{wave}
+
+	\ganttbar[name=hull]{Final Hull Design}{18}{19}\\
+	\ganttlink{wave}{hull}
+	\ganttlink{weight}{hull}
+
+	\ganttbar[name=buildhw]{Build Hardware}{10}{13}\\
+	\ganttlink{prototype1}{buildhw}
+
+	\ganttbar[name=program]{Program Software}{14}{17}\\
+	\ganttbar[name=debug]{Debug Software}{18}{19}\\
+	\ganttlink{program}{debug}
+
+	\ganttbar[name=integrate]{Integrate Systems}{20}{20}\\
+	\ganttlink{debug}{integrate}
+	\ganttlink{hull}{integrate}
+
+	\ganttbar[name=testintegrate]{Test Integrated Systems}{22}{25}\\
+	\ganttbar[name=predict]{Make Predictions}{22}{25}\\
+	\ganttlink{integrate}{predict}
+	\ganttlink{integrate}{testintegrate}
+
+	\ganttbar[name=poster]{Make Poster}{24}{29}\\
+
+	\ganttmilestone{Competition}{29}\\
+
+	\ganttbar[name=makepresent]{Make Presentation Slides}{26}{29}\\
+	\ganttbar[name=practicepresent]{Practice Presentation}{30}{31}\\
+
+	\ganttmilestone{Presentation}{31}\\
+
+	\ganttbar[name=practicedesign]{Pracice/Prepare for Design Review}{34}{37}\\
+
+	\ganttmilestone{Design Review}{39}
+
+
+
+
+%	\ganttbar[name=congen]{Concept Generation}{7}{8}\\
+%
+%	\ganttgroup[name=eval, group/.append style={fill=red}]{Evaluation}{9}{11}\\
+%	\ganttbar[name=winnow, bar/.append style={fill=red}]{Winnowing}{9}{9}\\
+%	\ganttbar[name=rank, bar/.append style={fill=red}]{Ranking}{9}{9}\\
+%	\ganttbar[name=score, bar/.append style={fill=red}]{Scoring}{10}{17}\\
+%	\ganttlink[link type=f-s]{winnow}{rank}
+%	\ganttlink{rank}{score}
+%%			\ganttlink{congen}{eval}
+%	\ganttlink[link type=f-s]{congen}{winnow}
+%
+%	\ganttgroup[name=design, group/.append style={fill=blue}]{Detailed Design}{12}{18}\\
+%	\ganttbar[name=build, bar/.append style={fill=blue}]{Building (Jasper, Matteo, Aliia, Arian)}{12}{18}\\
+%	\ganttbar[name=test, bar/.append style={fill=blue}]{Testing (Janelle, Jacky, David)}{10}{18}\\
+%%			\ganttlink{score}{design}
+%
+%	\ganttmilestone{Preliminary prototype}{12} \\
+%
+%	\ganttgroup[group/.append style={fill=green}]{Report}{8}{29}\\
+%	\ganttbar[bar/.append style={fill=green}]{Body (Matteo, Aliia, Adrian, David)}{8}{20}\\
+%	\ganttbar[bar/.append style={fill=green}]{Editing}{21}{29}\\
+%
+%	\ganttbar[name=poster]{Poster (Jasper, Matteo, Janelle)}{19}{24}\\
+%	\ganttbar[name=presentation]{Presentation (Jacky, David, Aliia, Adrian)}{19}{26}\\
+%	\ganttmilestone[name=poscom]{Poster \& Competition Due}{24}\\
+%	\ganttbar[name=rec,bar/.append style={fill=green}]{Conclusion and Recommendation}{25}{29}\\
+%	\ganttlink{poster}{poscom}
+%	\ganttlink{design}{poscom}
+%	\ganttlink{build}{poscom}
+%	\ganttlink{test}{poscom}
+%	\ganttlink{poscom}{rec}
+%
+%	\ganttmilestone[name=present]{Presentation}{26}
+%
+%	\ganttlink{presentation}{present}
+
+\end{ganttchart}
+
+\end{document}
+
