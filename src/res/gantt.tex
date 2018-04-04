@@ -37,7 +37,7 @@
 		fill=red,
 	},
 	elec label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
@@ -51,7 +51,7 @@
 		fill=blue,
 	},
 	desk label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
@@ -65,7 +65,7 @@
 		fill=green,
 	},
 	shop label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
@@ -81,7 +81,7 @@
 		two fill={red}{blue},
 	},
 	elecdesk label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
@@ -95,7 +95,7 @@
 		two fill={blue}{green},
 	},
 	deskshop label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
@@ -109,7 +109,7 @@
 		two fill={red}{green},
 	},
 	elecshop label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
@@ -125,7 +125,7 @@
 		three fill={red}{blue}{green},
 	},
 	all label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
@@ -138,24 +138,18 @@
 \begin{document}
 
 \begin{ganttchart}[
-	x unit=0.45cm/2,
-	y unit chart=0.6cm,
+	x unit=1em/2,
+	y unit chart=1.5em,
 	hgrid={dotted},
 	vgrid={*{1}{draw=none},dotted}, %Draw vertical lines every second unit because one unit is half a day
 	bar label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		anchor=east,
 		font=\relsize{-2}
 	},
-	group label node/.style={
-		text width=1.5in,
-		align=right,
-		font=\bf\relsize{-2},
-		anchor=east
-	},
 	milestone label node/.style={
-		text width=1.5in,
+		text width=10em,
 		align=right,
 		font=\em\relsize{-2},
 		anchor=east
@@ -164,7 +158,7 @@
 	link bulge=0.8,
 ]
 {0}{41} % 20 days
-	\gantttitlelist{3,...,23}{2} \\
+	\gantttitlelist{3,...,23}{2}\\
 
 	\ganttall{Project Management Meeting}{0}{0}\\
 	\ganttall[name=funcdecomp]{Function Decomposition}{0}{1}\\
