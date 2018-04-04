@@ -1,0 +1,219 @@
+\documentclass[tikz,border=10pt,multi,rgb]{standalone}
+\usepackage[edges]{forest}
+\usepackage{tikz}
+\usepackage{textcomp,fixltx2e}
+\usepackage{alphalph}
+\usepackage{forarray}
+\usepackage{l3regex}
+\usepackage{xparse}
+\usetikzlibrary{fit,calc,shapes,positioning,scopes,backgrounds,arrows,arrows.meta}
+
+% Number assigned to the first top level function
+\def\starton{1}
+\begin{document}
+
+\forestset{
+  tree node/.style = {
+%	  inner sep=2pt,
+%	  rounded corners = 2pt,
+%	  font=\sffamily,
+	  rectangle,
+	  draw,
+%	  thick,
+%	  fill=white,
+%	  drop shadow
+	}
+}
+
+\def\toplevel{}
+
+% Dynamically create macros
+\newcommand{\makesubfunc}[2]{
+	\ifcsname#1\endcsname
+		% Macro exists, append to end
+		\expandafter\edef\csname#1\endcsname{\expandafter\csname#1\endcsname #2}
+	\else
+		% Macro doesnt exist, create a new one
+		\expandafter\def\csname#1\endcsname{#2}
+		% add to list of created macros
+		\ifcsname subfunctions\endcsname
+			\edef\subfunctions{\subfunctions, #1}
+		\else
+			%subfunctions macro doesnt exist yet
+			\def\subfunctions{#1}
+		\fi
+	\fi
+}
+
+\newcounter{topfunc}
+\newcounter{topconc}[topfunc]
+
+\begin{forest}
+	for tree={
+		fill=white,
+		grow'=0,
+		parent anchor=children,
+		child anchor=parent,
+%	  	align=center,
+		text width=4cm,
+		draw,
+		anchor=parent,
+		if n children=0{folder}{},
+		l sep=1cm,
+		edge path'={[-Latex,line width=0.7pt](!u.parent anchor) -- ++(5pt,0) |- (.child anchor)},
+		fit=band,
+	},
+	where n=1{
+		calign with current edge
+	}{},
+	set root/.style={
+		text width=0cm,
+		draw=none,
+		fill=none
+	},
+	set function/.style={
+		content/.wrap 2 pgfmath args={\textbf{F##1} ##2}{int(n()+\starton-1)}{content()},
+		name/.wrap pgfmath arg={f##1}{n()},
+		s sep=1cm,
+		tree node
+	},
+	set concept/.style={
+		content/.wrap 3 pgfmath args={\textbf{C##1\alphalph{##2}} ##3}{int(n("!u")+\starton-1)}{n()}{content()},
+		name/.wrap 2 pgfmath args={f##1c##2}{n("!u")}{n()},
+		tree node
+	},
+	set subfunction/.style n args={3}{
+		content/.wrap 2 pgfmath args={\textbf{sF##1} ##2}{int(n()+\starton-1)}{content()},
+		name/.wrap 3 pgfmath args={f##1c##2sf##3}{n("!uu")}{n("!u")}{n()},
+		TeX={
+			\makesubfunc{f\alphalph{#1}c\alphalph{#2}}{(f#1c#2sf#3)}
+		},
+		tree node
+	},
+	set subconcept/.style n args={4}{
+		content/.wrap 3 pgfmath args={\textbf{sC##1\alphalph{##2}} ##3}{n("!u")}{n()}{content()},
+		name/.wrap 4 pgfmath args={f##1c##2sf##3sc##4}{n("!uuu")}{n("!uu")}{n("!u")}{n()},
+		TeX={
+			\makesubfunc{f\alphalph{#1}c\alphalph{#2}}{(f#1c#2sf#3sc#4)}
+		},
+		tree node,
+	},
+	my label/.style={
+ 	  	label={[align=left,text width=4cm,yshift=0.1cm] {\textbf{#1}}},
+	},
+	my sflabel/.style n args={2}{
+		label={[align=left,text width=4cm,yshift=0.1cm] {\textbf{Sub-Functions (C#1\alphalph{#2})}}},
+	},
+	before typesetting nodes={
+		for tree={
+			if level=0{
+				% Don't show the root node
+				content={},
+				set root,
+				s sep=1cm,
+			}{
+				if level=1{
+					% Dont connect function nodes to root
+					no edge,
+					set function,
+					TeX={
+						\stepcounter{topfunc}
+						\edef\toplevel{\toplevel (f\arabic{topfunc})}
+					},
+					if n=1{
+						% Add the "Top Level" label to the first function node
+						my label={Top Level},
+						%name/.wrap 4 pgfmath args={f##1c##2sf##3sc##4}{n("!uuu")}{n("!uu")}{n("!u")}{n()},
+%						TeX={
+%							\edef\toplevel{\toplevel (toplevellabel)}
+%						},
+					}{}
+				}{
+					if level=2{
+						set concept,
+						TeX={
+							\stepcounter{topconc}
+							\edef\toplevel{\toplevel (f\arabic{topfunc}c\arabic{topconc})}
+						}
+					}{
+						if level=3{
+							set subfunction/.process={PPP}{n("!uu")}{n("!u")}{n()},
+							if n=1{
+								my sflabel/.process={PP}{int(n("!uu")+\starton-1)}{n("!u")},
+							}{},
+						}{
+							if level=4{
+								set subconcept/.process={PPPP}{n("!uuu")}{n("!uu")}{n("!u")}{n()},
+							}{
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+	[
+		[Maintain height relative to water surface
+			[Hull material (low density)
+				[Wood]
+				[Foam]
+				[Ice with Sawdust]
+			]
+			[Hull shape]
+			[Hover]
+		]
+		[Stay Upright
+			[Location of CG
+				[Add masses strategically]
+			]
+			[Hull Shape]
+			[Long supporting members]
+			[Outriggers]
+		]
+		[Move relative to water
+			[Air fan]
+			[Water propeller]
+			[Water jet]
+			[Water wheel]
+			[Oars]
+			[Grappling hook]
+			[Controlled gas expulsion
+				[Dry ice]
+				[Liquid nitrogen]
+			]
+			[Springs]
+		]
+		[Accept control input from user
+			[RC receiver
+				[Convert user input to set of actions
+					[Arduino]
+					[Any other microcontroller]
+				]
+			]
+			[Push]
+		]
+		[Carry Rocket
+			[Rocket holder (magnet)]
+			[Tie down]
+			[Glue down]
+			[Tube]
+		]
+		[Convert electrical to mechanical energy
+			[DC motor]
+		]
+		[Change Directions
+			[Rudder]
+			[Thrust vectoring]
+			[Sail]
+			[Servo]
+			[Reserved air jets]
+		]
+	]
+	\begin{scope}[on background layer]
+		\node [draw=black!60,fill=black!20, fit={\toplevel}] {};
+		\ForEachX{,}{
+			\node [draw=black!60,fill=black!20, fit={\csname\thislevelitem\endcsname}] {};
+		}{\subfunctions}
+	\end{scope}
+\end{forest}
+\end{document}
