@@ -1,6 +1,8 @@
 \documentclass[float=false]{standalone}
 \usepackage{pgfgantt}
 \usepackage{pgfcalendar}
+\usepackage{tikz}
+\usetikzlibrary{shadows}
 \usepackage{datetime}
 \usepackage[none]{hyphenat}
 \usepackage{relsize} % Allow fonts to be shrunk relative to normal fontsize
@@ -10,7 +12,131 @@
 \setganttlinklabel{s-s}{}
 \setganttlinklabel{f-f}{}
 
+\tikzset{
+	two fill/.style 2 args={
+		fill=#2,
+		path picture={
+			\fill[#1, sharp corners]	(path picture bounding box.south west) -|
+							 			(path picture bounding box.east) -| cycle;
+		}
+	},
+	three fill/.style n args={3}{
+		fill=#3,
+		path picture={
+			\fill[#1, sharp corners]	(path picture bounding box.north west)rectangle
+										($(path picture bounding box.north east)!.33!(path picture bounding box.south east)$);
+			\fill[#2, sharp corners]	($(path picture bounding box.north west)!.33!(path picture bounding box.south west)$)rectangle
+										($(path picture bounding box.north east)!.66!(path picture bounding box.south east)$);
+		}
+	}
+}
+% Custom bars for single teams
+\newganttchartelement{elec}{
+	elec/.style= {
+		draw=black,
+		fill=red,
+	},
+	elec label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	elec height=0.7,
+	elec top shift=0.15
+}
+\newganttchartelement{desk}{
+	desk/.style= {
+		draw=black,
+		fill=blue,
+	},
+	desk label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	desk height=0.7,
+	desk top shift=0.15
+}
+\newganttchartelement{shop}{
+	shop/.style= {
+		draw=black,
+		fill=green,
+	},
+	shop label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	shop height=0.7,
+	shop top shift=0.15
+}
+
+% Custom bars for dual teams
+\newganttchartelement{elecdesk}{
+	elecdesk/.style= {
+		draw=black,
+		two fill={red}{blue},
+	},
+	elecdesk label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	elecdesk height=0.7,
+	elecdesk top shift=0.15
+}
+\newganttchartelement{deskshop}{
+	deskshop/.style= {
+		draw=black,
+		two fill={blue}{green},
+	},
+	deskshop label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	deskshop height=0.7,
+	deskshop top shift=0.15
+}
+\newganttchartelement{elecshop}{
+	elecshop/.style= {
+		draw=black,
+		two fill={red}{green},
+	},
+	elecshop label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	elecshop height=0.7,
+	elecshop top shift=0.15
+}
+
+% Custom bar for all teams
+\newganttchartelement{all}{
+	all/.style= {
+		draw=black,
+		three fill={red}{blue}{green},
+	},
+	all label node/.style={
+		text width=1.5in,
+		align=right,
+		anchor=east,
+		font=\relsize{-2}
+	},
+	all height=0.7,
+	all top shift=0.15
+}
+
+
 \begin{document}
+
 \begin{ganttchart}[
 	x unit=0.45cm/2,
 	y unit chart=0.6cm,
@@ -34,107 +160,75 @@
 		font=\em\relsize{-2},
 		anchor=east
 	},
+	link mid=0.5,
+	link bulge=0.8,
 ]
 {0}{41} % 20 days
-	\newcommand{\barcolor}[1]{{bar/.style={fill=#1}}}
-	\newcommand{\groupcolor}[1]{group/.append style={fill=#1}}
 	\gantttitlelist{3,...,23}{2} \\
 
-	\ganttbar{Project Management Meeting}{0}{0}\\
-	\ganttbar{Function Decomposition}{0}{1}\\
-	\ganttbar[name=congen]{Concept Generation}{2}{4}\\
-	\ganttbar[name=screen]{Screening}{3}{3}\\
-	\ganttbar[name=rank]{Ranking}{6}{7}\\
+	\ganttall{Project Management Meeting}{0}{0}\\
+	\ganttall[name=funcdecomp]{Function Decomposition}{0}{1}\\
+	\ganttall[name=congen]{Concept Generation}{2}{4}\\
+	\ganttall[name=screen]{Screening}{3}{3}\\
+	\ganttall[name=rank]{Ranking}{6}{7}\\
+	\ganttlink{funcdecomp}{congen}
 	\ganttlink{congen}{rank}
 	\ganttlink{screen}{rank}
 
-	\ganttbar[name=research]{Detailed Research}{8}{11}\\
-	\ganttbar[name=prototype1]{Prototype 1}{8}{9}\\
-	\ganttlink{screen}{prototype1}
+	\ganttelecdesk[name=research]{Detailed Research}{8}{11}\\
+	\ganttshop[name=prototype1]{Prototype 1}{8}{9}\\
+	\ganttlink[link mid=0.14]{screen}{prototype1} %Shift back mid to roughly line up with screen -- rank
 	\ganttlink{rank}{research}
 
-	\ganttmilestone{Preliminary Prototype Due}{19} \\
+	\ganttmilestone[name=prelim]{Preliminary Prototype Due}{20} \\
 
-	\ganttbar[name=prototype2]{Prototype 2}{12}{15}\\
-	\ganttlink{prototype1}{prototype2}
+	\ganttdeskshop[name=prototype2]{Prototype 2}{12}{15}\\
+	\ganttlink[link mid=0.4]{prototype1}{prototype2} % Shift forward to match bulge on prototype1 -- buildhw
 	\ganttlink{research}{prototype2}
 
-	\ganttbar[name=weight]{Weight Testing}{16}{16}\\
-	\ganttbar[name=wave]{Wave Testing}{16}{16}\\
+	\ganttdesk[name=weight]{Weight Testing}{16}{16}\\
+	\ganttshop[name=wave]{Wave Testing}{16}{16}\\
 	\ganttlink{prototype2}{weight}
-	\ganttlink{prototype2}{wave}
+	\ganttlink[link mid=0.25]{prototype2}{wave} % Shift mid down to match prototype2 --weight
 
-	\ganttbar[name=hull]{Final Hull Design}{18}{19}\\
+	\ganttdeskshop[name=hull]{Final Hull Design}{18}{19}\\
 	\ganttlink{wave}{hull}
 	\ganttlink{weight}{hull}
 
-	\ganttbar[name=buildhw]{Build Hardware}{10}{13}\\
+	\ganttelec[name=buildhw]{Build Hardware}{10}{13}\\
 	\ganttlink{prototype1}{buildhw}
 
-	\ganttbar[name=program]{Program Software}{14}{17}\\
-	\ganttbar[name=debug]{Debug Software}{18}{19}\\
+	\ganttelec[name=program]{Program Software}{14}{17}\\
+	\ganttelec[name=debug]{Debug Software}{18}{19}\\
 	\ganttlink{program}{debug}
 
-	\ganttbar[name=integrate]{Integrate Systems}{20}{20}\\
+	\ganttall[name=integrate]{Integrate Systems}{20}{20}\\
 	\ganttlink{debug}{integrate}
 	\ganttlink{hull}{integrate}
 
-	\ganttbar[name=testintegrate]{Test Integrated Systems}{22}{25}\\
-	\ganttbar[name=predict]{Make Predictions}{22}{25}\\
+	\ganttelecshop[name=testintegrate]{Test Integrated Systems}{22}{25}\\
+	\ganttdesk[name=predict]{Make Predictions}{22}{25}\\
 	\ganttlink{integrate}{predict}
 	\ganttlink{integrate}{testintegrate}
 
-	\ganttbar[name=poster]{Make Poster}{24}{29}\\
+	\ganttall[name=poster]{Make Poster}{24}{29}\\
 
-	\ganttmilestone{Competition}{29}\\
+	\ganttmilestone[name=competition]{Competition}{30}\\
+	\ganttlink{testintegrate}{competition}
+	\ganttlink{predict}{competition}
+	\ganttlink{poster}{competition}
 
-	\ganttbar[name=makepresent]{Make Presentation Slides}{26}{29}\\
-	\ganttbar[name=practicepresent]{Practice Presentation}{30}{31}\\
+	\ganttall[name=makepresent]{Make Presentation Slides}{26}{29}\\
+	\ganttall[name=practicepresent]{Practice Presentation}{30}{31}\\
+	\ganttlink{makepresent}{practicepresent}
 
-	\ganttmilestone{Presentation}{31}\\
+	\ganttmilestone[name=presentation]{Presentation}{32}\\
+	\ganttlink{practicepresent}{presentation}
 
-	\ganttbar[name=practicedesign]{Pracice/Prepare for Design Review}{34}{37}\\
+	\ganttall[name=practicedesign]{Pracice/Prepare for Design Review}{36}{39}\\
 
-	\ganttmilestone{Design Review}{39}
-
-
-
-
-%	\ganttbar[name=congen]{Concept Generation}{7}{8}\\
-%
-%	\ganttgroup[name=eval, group/.append style={fill=red}]{Evaluation}{9}{11}\\
-%	\ganttbar[name=winnow, bar/.append style={fill=red}]{Winnowing}{9}{9}\\
-%	\ganttbar[name=rank, bar/.append style={fill=red}]{Ranking}{9}{9}\\
-%	\ganttbar[name=score, bar/.append style={fill=red}]{Scoring}{10}{17}\\
-%	\ganttlink[link type=f-s]{winnow}{rank}
-%	\ganttlink{rank}{score}
-%%			\ganttlink{congen}{eval}
-%	\ganttlink[link type=f-s]{congen}{winnow}
-%
-%	\ganttgroup[name=design, group/.append style={fill=blue}]{Detailed Design}{12}{18}\\
-%	\ganttbar[name=build, bar/.append style={fill=blue}]{Building (Jasper, Matteo, Aliia, Arian)}{12}{18}\\
-%	\ganttbar[name=test, bar/.append style={fill=blue}]{Testing (Janelle, Jacky, David)}{10}{18}\\
-%%			\ganttlink{score}{design}
-%
-%	\ganttmilestone{Preliminary prototype}{12} \\
-%
-%	\ganttgroup[group/.append style={fill=green}]{Report}{8}{29}\\
-%	\ganttbar[bar/.append style={fill=green}]{Body (Matteo, Aliia, Adrian, David)}{8}{20}\\
-%	\ganttbar[bar/.append style={fill=green}]{Editing}{21}{29}\\
-%
-%	\ganttbar[name=poster]{Poster (Jasper, Matteo, Janelle)}{19}{24}\\
-%	\ganttbar[name=presentation]{Presentation (Jacky, David, Aliia, Adrian)}{19}{26}\\
-%	\ganttmilestone[name=poscom]{Poster \& Competition Due}{24}\\
-%	\ganttbar[name=rec,bar/.append style={fill=green}]{Conclusion and Recommendation}{25}{29}\\
-%	\ganttlink{poster}{poscom}
-%	\ganttlink{design}{poscom}
-%	\ganttlink{build}{poscom}
-%	\ganttlink{test}{poscom}
-%	\ganttlink{poscom}{rec}
-%
-%	\ganttmilestone[name=present]{Presentation}{26}
-%
-%	\ganttlink{presentation}{present}
+	\ganttmilestone[name=designreview]{Design Review}{40}
+	\ganttlink{practicedesign}{designreview}
 
 \end{ganttchart}
 
