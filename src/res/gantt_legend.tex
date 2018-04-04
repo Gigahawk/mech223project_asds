@@ -1,0 +1,46 @@
+
+\documentclass[float=false]{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{fit}
+
+\begin{document}
+
+\tikzstyle{elec} = [
+	minimum width = 4em,
+	minimum height = 1em,
+	fill=red,
+	label={[name=eleclabel] right:{Electrical Team}}
+]
+\tikzstyle{desk} = [
+	minimum width = 4em,
+	minimum height = 1em,
+	fill=blue,
+	label={[name=desklabel] right:{Desk Team}}
+]
+\tikzstyle{shop} = [
+	minimum width = 4em,
+	minimum height = 1em,
+	fill=green,
+	label={[name=shoplabel] right:{Shop Team}}
+]
+
+\begin{tikzpicture}[
+	node distance=2em,
+]
+	\tikzstyle{every node} = [
+		rectangle,
+		draw=black,
+	]
+
+	\node (elec) [elec] {};
+	\node (desk) [desk,below of=elec] {};
+	\node (shop) [shop,below of=desk] {};
+
+	\node[fit=(elec)(eleclabel)(shop), label=above left:{Legend}]{};
+
+
+\end{tikzpicture}
+
+\end{document}
+

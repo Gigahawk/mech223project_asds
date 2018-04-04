@@ -1,0 +1,48 @@
+\documentclass{report}
+\usepackage[subpreambles=true]{standalone}
+\usepackage{import}
+\usepackage{rotating}
+\usepackage{pgfgantt} % Fix compile error maybe
+
+\pagenumbering{gobble}
+% Begin new command
+\title{Tutorial 1-1: Project Management}
+\author{
+	Group D1:,
+	Aliia Almazbekova - 24346158,
+	Jasper Chan - 37467164,
+	Jacky Chan - 19835164,
+	Matteo Ferraresso - 36470169,
+	Adrian Lam - 23735160,
+	Janelle Lawson - 34680165,
+	David Stewart - 54071155,
+}
+\for{MECH 223 Instructors, University of British Columbia}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}
+	\centering
+	\noindent\resizebox{\textwidth}{!}{
+		\import{res/}{gantt.tex}
+	}
+\end{figure}
+\begin{figure}
+	\centering
+	\import{res/}{gantt_legend.tex}
+\end{figure}
+
+\clearpage
+
+\pdfpagewidth 25in
+\begin {figure}
+	\centering
+	\noindent\resizebox{3.5\textwidth}{!}{
+		\import{res/}{cpm.tex}
+	}
+\end{figure}
+
+\end{document}
+
