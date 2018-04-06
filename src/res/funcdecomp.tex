@@ -170,6 +170,9 @@
 			[Long supporting members]
 			[Outriggers]
 		]
+		[Convert electrical to mechanical energy
+			[DC motor]
+		]
 		[Move relative to water
 			[Air fan]
 			[Water propeller]
@@ -192,15 +195,6 @@
 			]
 			[Push]
 		]
-		[Carry Rocket
-			[Rocket holder (magnet)]
-			[Tie down]
-			[Glue down]
-			[Tube]
-		]
-		[Convert electrical to mechanical energy
-			[DC motor]
-		]
 		[Change Directions
 			[Rudder]
 			[Thrust vectoring]
@@ -208,7 +202,15 @@
 			[Servo]
 			[Reserved air jets]
 		]
+		[Carry Rocket
+			[Rocket holder (magnet)]
+			[Tie down]
+			[Glue down]
+			[Tube]
+		]
 	]
+	\draw [-Latex,line width=0.7pt] (f3) edge (f4);
+	\draw [-Latex,line width=0.7pt] (f5) edge (f6);
 	\begin{scope}[on background layer]
 		\node [draw=black!60,fill=black!20, fit={\toplevel}] {};
 		\ForEachX{,}{
