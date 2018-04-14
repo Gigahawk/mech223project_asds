@@ -1,3 +1,4 @@
+// Don't touch these
 #define C1MIN 1100
 #define C1MAX 1984
 #define C2MIN 1088
@@ -14,6 +15,7 @@
 #define STATUS_LED 3
 #define WARNING_LED 4
 
+// If the escs still brown out try raising the backoff voltage or changing the increment
 #define THROTTLE_INCREMENT 0.1
 #define BACKOFF_VOLTAGE_LOW 3.5
 #define BACKOFF_VOLTAGE_HIGH 3.7
@@ -31,6 +33,10 @@ volatile int receiver_input[4];
 bool brownout;
 double throttle_multiplier;
 
+// first two arguments range of inputs, last value defines "ratio"
+// of output when powering two motors vs 1
+// (It's not really a ratio just twiddle the last number till it 
+// doesn't brownout at full speed or smth)
 Kinematics m_kinematics(0,MAXVAL,1.5);
 
 void setup() {

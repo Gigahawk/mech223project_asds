@@ -1,10 +1,13 @@
 #ifndef KINEMATICS_H
 #define KINEMATICS_H
 
-#define MOTOR_MAX_VAL 1000
-#define TOTAL_MAX_VAL 1600
-#define MAX_ACCEL 1
-#define MIN_APPROACH_RATE 2
+// I don't think these are used right now
+//#define MOTOR_MAX_VAL 1000
+//#define TOTAL_MAX_VAL 1600
+//#define MAX_ACCEL 1
+
+
+#define MIN_APPROACH_RATE 2 //Lower this to 1 or 0 if the escs brown out
  
 #include <Servo.h>
 #include <math.h>
@@ -13,6 +16,7 @@
 class Kinematics
 {      
   public:
+    
     Kinematics(int min, int max, double ratio);
 
     void updateState(int x, int y, int thrust);
