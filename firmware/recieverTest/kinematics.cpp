@@ -46,8 +46,8 @@ void Kinematics::updateMot()
   int diff0 = abs(m_mot[0] - m_mot_curr[0]);
   int diff1 = abs(m_mot[1] - m_mot_curr[1]);
 
-  double approach0 = abs(m_boost/diff0);
-  double approach1 = abs(m_boost/diff1);
+  double approach0 = constrain(abs(m_boost/diff0), MIN_APPROACH_RATE,1000);
+  double approach1 = constrain(abs(m_boost/diff1), MIN_APPROACH_RATE,1000);
 //  Serial.println(approach0);
 
   if(abs(m_mot[0] - m_mot_curr[0]) < approach0){

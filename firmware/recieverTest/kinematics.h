@@ -4,6 +4,7 @@
 #define MOTOR_MAX_VAL 1000
 #define TOTAL_MAX_VAL 1600
 #define MAX_ACCEL 1
+#define MIN_APPROACH_RATE 2
  
 #include <Servo.h>
 #include <math.h>
