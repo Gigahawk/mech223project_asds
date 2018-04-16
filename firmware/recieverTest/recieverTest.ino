@@ -168,7 +168,7 @@ void checkVoltage(){
 void loop() {
   // put your main code here, to run repeatedly:
 //  delay(250);
-//  print_signals();
+  print_signals();
   checkVoltage();
   m_kinematics.updateState(receiver_input[0], receiver_input[1], throttle_multiplier*receiver_input[2]);
 //  m_kinematics.printState();

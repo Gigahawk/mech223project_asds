@@ -7,7 +7,7 @@
 //#define MAX_ACCEL 1
 
 
-#define MIN_APPROACH_RATE 2 //Lower this to 1 or 0 if the escs brown out
+#define MIN_APPROACH_RATE 50 //Lower this to 1 or 0 if the escs brown out
  
 #include <Servo.h>
 #include <math.h>
