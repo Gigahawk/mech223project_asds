@@ -4,15 +4,9 @@ Kinematics::Kinematics(int min, int max, double ratio) :
 m_min(min), m_max(max), m_ratio(ratio)
 {
   m_mid = (min + max)/2;
-  m_mot[0] = 0;
-  m_mot_curr[0];
+  m_speed[0] = 0;
+  m_speed_target[0];
   m_boost = m_max/m_ratio;
-//  m_mot0.attach(mot0pin);
-}
-
-void Kinematics::attach(int mot0, int mot1){
-  m_mot0.attach(mot0);
-  m_mot1.attach(mot1);
 }
 
 void Kinematics::updateState(int x, int y, int thrust)
@@ -28,61 +22,40 @@ void Kinematics::updateState(int x, int y, int thrust)
   theta = (abs(m_x) < 100 && abs(m_y) < 100)? 0 : abs(atan(m_y/(double)m_x));
   mult = map(sin(2*theta)*1000.0,0,1000,1000,1/m_ratio*1000)/1000.0;
 //  Serial.println(mult);
-  m_mot[0] = mult*(m_y + m_x);
-  m_mot[1] = mult*(m_y - m_x);
-  
-//  constrain(map(m_x - m_y,-500,500,160,30),33,155);
-//  Serial.println(m_mot[0]);
-//  constrain(map(m_x + m_y,-500,500,160,30),33,155); // Flip motor wires i guess
+  m_speed_target[0] = mult*(m_y + m_x);
+  m_speed_target[1] = mult*(m_y - m_x);
 
-  updateMot();
-//  m_mot0.write(map(m_mot[0],-1666,1666,33,155));
-//  m_mot1.write(map(m_mot[1],-1666,1666,33,155));
-}
-
-void Kinematics::updateMot()
-{
-  int mot0, mot1;
-  int diff0 = abs(m_mot[0] - m_mot_curr[0]);
-  int diff1 = abs(m_mot[1] - m_mot_curr[1]);
+  // Set approach rate
+  int diff0 = abs(m_speed_target[0] - m_speed[0]);
+  int diff1 = abs(m_speed_target[1] - m_speed[1]);
 
   double approach0 = constrain(abs(m_boost/diff0), MIN_APPROACH_RATE,1000);
   double approach1 = constrain(abs(m_boost/diff1), MIN_APPROACH_RATE,1000);
-//  Serial.println(approach0);
 
-  if(abs(m_mot[0] - m_mot_curr[0]) < approach0){
-    m_mot_curr[0] = m_mot[0];
-  } else if(m_mot[0] > m_mot_curr[0] && m_mot_curr[0] >= 0){
-    m_mot_curr[0] += approach0;
-  } else if(m_mot[0] > m_mot_curr[0] && m_mot_curr[0] < 0){
-    m_mot_curr[0] = m_mot[0];
-  } else if(m_mot[0] < m_mot_curr[0] && m_mot_curr[0] <= 0){
-    m_mot_curr[0] -= approach0;
-  } else {
-    m_mot_curr[0] = m_mot[0];
-  }
-
-  if(abs(m_mot[1] - m_mot_curr[1]) < approach1){
-    m_mot_curr[1] = m_mot[1];
-  } else if(m_mot[1] > m_mot_curr[1] && m_mot_curr[1] >= 0){
-    m_mot_curr[1] += approach1;
-  } else if(m_mot[1] > m_mot_curr[1] && m_mot_curr[1] < 0){
-    m_mot_curr[1] = m_mot[1];
-  } else if(m_mot[1] < m_mot_curr[1] && m_mot_curr[1] <= 0){
-    m_mot_curr[1] -= approach1;
-  } else {
-    m_mot_curr[1] = m_mot[1];
-  }
-  double mult = m_thrust/(double)m_max;
+  // Scale speeds based on thrust
+  mult = m_thrust/(double)m_max;
   
-  m_mot0.write(map(m_mot_curr[0]*mult,-m_boost,m_boost,33,155));
-  m_mot1.write(map(m_mot_curr[1]*mult,-m_boost,m_boost,33,155));
-  Serial.print(m_mot[0]);
-  Serial.print("\t");
-  Serial.print(m_mot_curr[0]);
-  Serial.print("\t");
-  Serial.print(approach0);
-  Serial.println();
+  for(int i = 0; i < 2; i++){
+    if(abs(m_speed_target[i] - m_speed[i]) < approach0){
+      m_speed[i] = m_speed_target[i];
+    } else if(m_speed_target[i] > m_speed[i] && m_speed[i] >= 0){
+      m_speed[i] += approach0;
+    } else if(m_speed_target[i] > m_speed[i] && m_speed[i] < 0){
+      m_speed[i] = m_speed_target[i];
+    } else if(m_speed_target[i] < m_speed[i] && m_speed[i] <= 0){
+      m_speed[i] -= approach0;
+    } else if(m_speed_target[i] < m_speed[i] && m_speed[i] > 0){
+      m_speed[i] = m_speed_target[i];
+    }
+
+    m_speed[i] *= mult;
+  }
+
+}
+
+void Kinematics::getState(int &s1, int &s2){
+  s1 = m_speed[0];
+  s2 = m_speed[1];
 }
 
 void Kinematics::printState(){
@@ -90,14 +63,14 @@ void Kinematics::printState(){
   Serial.print(m_x);
   Serial.print(" y: ");
   Serial.print(m_y);
-  Serial.print(" mot0: ");
-  Serial.print(m_mot[0]);
-  Serial.print(" mot1: ");
-  Serial.print(m_mot[1]);
-  Serial.print(" cmot0: ");
-  Serial.print(m_mot_curr[0]);
-  Serial.print(" cmot1: ");
-  Serial.print(m_mot_curr[1]);
+  Serial.print(" t1: ");
+  Serial.print(m_speed_target[0]);
+  Serial.print(" t2: ");
+  Serial.print(m_speed_target[1]);
+  Serial.print(" s1: ");
+  Serial.print(m_speed[0]);
+  Serial.print(" s2: ");
+  Serial.print(m_speed[1]);
   
   Serial.println();
 }

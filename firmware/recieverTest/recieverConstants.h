@@ -1,0 +1,13 @@
+#ifndef RECIEVERCONSTANTS_H
+#define RECIEVERCONSTANTS_H
+
+#define C1MIN 1100
+#define C1MAX 1984
+#define C2MIN 1088
+#define C2MAX 1968
+#define C3MIN 1092
+#define C3MAX 1964
+#define C4MIN 1100
+#define C4MAX 1988
+
+#endif //RECIEVERCONSTANTS_H

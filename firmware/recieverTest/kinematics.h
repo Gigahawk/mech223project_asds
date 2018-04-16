@@ -7,9 +7,9 @@
 //#define MAX_ACCEL 1
 
 
-#define MIN_APPROACH_RATE 2 //Lower this to 1 or 0 if the escs brown out
+#define MIN_APPROACH_RATE 10 //Lower this to 1 or 0 if the escs brown out
  
-#include <Servo.h>
+
 #include <math.h>
 #include <Arduino.h>
 
@@ -21,23 +21,20 @@ class Kinematics
 
     void updateState(int x, int y, int thrust);
 
+    void getState(int &s1, int &s2);
+
     void printState();
 
-    void attach(int mot0, int mot1);
-
-//    updateVec(double r,double theta);
   private:
     
     int m_x,m_y,m_thrust;
     double m_ratio;
     int m_boost;
     int m_min,m_max,m_mid;
-    int m_mot_curr[2];
-    int m_mot[2];
-    Servo m_mot0,m_mot1;
+    int m_speed[2];
+    int m_speed_target[2];
 
     void Kinematics::updateMot();
-    
-    
+        
 };
 #endif //KINEMATICS_H

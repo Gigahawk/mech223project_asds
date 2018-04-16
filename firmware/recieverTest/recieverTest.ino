@@ -1,12 +1,5 @@
 // Don't touch these
-#define C1MIN 1100
-#define C1MAX 1984
-#define C2MIN 1088
-#define C2MAX 1968
-#define C3MIN 1092
-#define C3MAX 1964
-#define C4MIN 1100
-#define C4MAX 1988
+#include "recieverConstants.h"
 
 #define REMOTEMAXVAL 1050*2
 #define MAXVAL 1000*2
@@ -20,9 +13,10 @@
 #define BACKOFF_VOLTAGE_LOW 3.5
 #define BACKOFF_VOLTAGE_HIGH 3.7
 
-
 #include "kinematics.h"
 #include "vref.h"
+#include "MotorDriver.h"
+#include "ESC.h"
 
 byte last_channel_1, last_channel_2, last_channel_3, last_channel_4;
 unsigned long timer_channel_1, timer_channel_2, timer_channel_3, timer_channel_4, esc_timer, esc_loop_timer;
@@ -33,11 +27,23 @@ volatile int receiver_input[4];
 bool brownout;
 double throttle_multiplier;
 
+//Motor m1(2,1,3,4,A1);
+//Motor m2(5,8,7,6,A2);
+
+//MotorDriver(&m1,&m2,8,9);
+
 // first two arguments range of inputs, last value defines "ratio"
 // of output when powering two motors vs 1
 // (It's not really a ratio just twiddle the last number till it 
 // doesn't brownout at full speed or smth)
 Kinematics m_kinematics(0,MAXVAL,1.5);
+
+//ESCDriver m_escdriver(5,6,-10
+
+//Motor m1(8,9,5,A0);
+//Motor m2(10,11,6,A1);
+
+//MotorDriver m_motors(m1, m2, 13, 12, 1000);
 
 void setup() {
   throttle_multiplier = 1;
@@ -46,12 +52,13 @@ void setup() {
   PCMSK0 |= (1 << PCINT1);
   PCMSK0 |= (1 << PCINT2);
   PCMSK0 |= (1 << PCINT3);
-//  PCMSK0 |= (1 << PCINT4);
+
   Serial.begin(115200);
-  pinMode(BMS_PIN, INPUT);
-  pinMode(STATUS_LED, OUTPUT);
-  pinMode(WARNING_LED, OUTPUT);
-  m_kinematics.attach(5,6);
+//  pinMode(BMS_PIN, INPUT);
+//  pinMode(STATUS_LED, OUTPUT);
+//  pinMode(WARNING_LED, OUTPUT);
+//  m_kinematics.attach(5,6);
+//    m_motors.attach();
   brownout = false;
 
 }
@@ -108,12 +115,6 @@ ISR(PCINT0_vect){
     receiver_input[3] = constrain(receiver_input[3],0,MAXVAL);
   }
 
-//  if(PINB & B00010000 ){
-//    throttle_multiplier -= THROTTLE_INCREMENT*4;
-//  } else {
-//    throttle_multiplier += THROTTLE_INCREMENT;
-//  }
-//  throttle_multiplier = constrain(throttle_multiplier, 0, 1);
 }
 
 void print_signals(){
@@ -166,10 +167,18 @@ void checkVoltage(){
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-//  delay(250);
-//  print_signals();
-  checkVoltage();
-  m_kinematics.updateState(receiver_input[0], receiver_input[1], throttle_multiplier*receiver_input[2]);
+//  m_kinematics.updateState(receiver_input[0], receiver_input[1], throttle_multiplier*receiver_input[2]);
 //  m_kinematics.printState();
+//  for(int i = -1000; i < 1000; i+= 10){
+//    m_motors.updateState(i,i);
+//    delay(250);
+//  }
+//  for(int i = 1000; i > 1000; i-= 10){
+//    m_motors.updateState(i,i);
+//    delay(250);
+//  }
+
+//  Serial.println(m1.in1);
+
+  
 }
